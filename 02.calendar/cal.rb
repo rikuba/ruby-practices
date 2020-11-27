@@ -9,18 +9,12 @@ WDAY = '日月火水木金土'
 def makeCalendar(year, month)
   caption = "#{month}月 #{year}".center(WIDTH)
   header = WDAY.chars.join(' ')
-  weeks = []
-
+  
   first = Date.new(year, month, 1)
   last = Date.new(year, month, -1)
-  first.upto(last) do |d|
-    # 週の始まり
-    weeks.push([]) if d.wday == 0 || d.day == 1
-
-    weeks.last[d.wday] = d.day
-  end
-
-  weeks = weeks.map do |week|
+  spaces = Array.new(first.wday, '')
+  days = [*first.day..last.day]
+  weeks = (spaces + days).each_slice(7).map do |week|
     week.map {|day| day.to_s.rjust(2)}.join(' ')
   end
 
