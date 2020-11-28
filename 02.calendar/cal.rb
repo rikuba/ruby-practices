@@ -20,11 +20,8 @@ end
 
 params = ARGV.getopts('y:m:')
 
-year = params['y'].to_i
-year = Date.today.year if year == 0
-
-month = params['m'].to_i
-month = Date.today.month if month == 0
+year = params['y']&.to_i || Date.today.year
+month = params['m']&.to_i || Date.today.month
 
 puts makeCalendar(year, month).join("\n")
 puts # 空行を出力
