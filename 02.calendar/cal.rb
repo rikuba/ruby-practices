@@ -23,5 +23,5 @@ params = ARGV.getopts('y:m:')
 year = params['y']&.to_i || Date.today.year
 month = params['m']&.to_i || Date.today.month
 
-puts makeCalendar(year, month).join("\n")
+puts makeCalendar(year, month)
 puts ''
