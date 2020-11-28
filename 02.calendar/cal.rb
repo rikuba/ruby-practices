@@ -24,4 +24,4 @@ year = params['y']&.to_i || Date.today.year
 month = params['m']&.to_i || Date.today.month
 
 puts makeCalendar(year, month).join("\n")
-puts # 空行を出力
+puts ''
