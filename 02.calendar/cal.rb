@@ -3,7 +3,7 @@
 require 'date'
 require 'optparse'
 
-def makeCalendar(year, month)
+def make_calendar(year, month)
   caption = "#{month}月 #{year}".center(20)
   header = '日 月 火 水 木 金 土'
   
@@ -23,5 +23,5 @@ params = ARGV.getopts('y:m:')
 year = params['y']&.to_i || Date.today.year
 month = params['m']&.to_i || Date.today.month
 
-puts makeCalendar(year, month)
+puts make_calendar(year, month)
 puts ''
