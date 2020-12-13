@@ -21,7 +21,7 @@ class << Bowling
   # ==== 戻り値
   # * [Integer] - 全投球における倒したピン数
   def parse_score_text(score_text)
-    score_text.chars.map do |score|
+    score_text.each_char.map do |score|
       score == 'X' ? 10 : score.to_i
     end
   end
