@@ -8,20 +8,32 @@ require_relative './ls'
 class LsTest < Minitest::Test
   PROGRAM_PATH = File.absolute_path('./ls.rb')
 
-  def test_list_directory_contents
-    filenames = [
-      'babel.config.js', 'bin', 'config', 'config.ru', 'Gemfile',
-      'Gemfile.lock', 'log', 'package.json', 'postcss.config.js',
-      'Procfile', 'README.md'
-    ]
+  FILENAMES1 = [
+    'babel.config.js', 'bin', 'config', 'config.ru', 'Gemfile', 'Gemfile.lock',
+    'log', 'package.json', 'postcss.config.js', 'Procfile', 'README.md'
+  ].freeze
 
+  def test_list_directory_contents
     chtmpdir do
-      FileUtils.touch(filenames)
+      FileUtils.touch(FILENAMES1)
       assert_equal <<~EXPECTED, `#{PROGRAM_PATH}`
         Gemfile			babel.config.js		log
         Gemfile.lock		bin			package.json
         Procfile		config			postcss.config.js
         README.md		config.ru
+      EXPECTED
+    end
+  end
+
+  def test_list_directory_contents_with_a
+    chtmpdir do
+      FileUtils.touch(FILENAMES1)
+      assert_equal <<~EXPECTED, `#{PROGRAM_PATH} -a`
+        .			README.md		log
+        ..			babel.config.js		package.json
+        Gemfile			bin			postcss.config.js
+        Gemfile.lock		config
+        Procfile		config.ru
       EXPECTED
     end
   end

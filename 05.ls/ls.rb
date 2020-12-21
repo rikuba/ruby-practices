@@ -1,11 +1,13 @@
 #!/usr/bin/env ruby
 # frozen_string_literal: true
 
+require 'optparse'
+
 TAB_SIZE = 8
 MAX_COLUMNS = 3
 
-def list_directory_contents
-  filenames = Dir.glob('*').sort
+def list_directory_contents(all: false)
+  filenames = Dir.glob('*', all ? File::FNM_DOTMATCH : 0).sort
   print format_as_multi_column(filenames)
 end
 
@@ -36,4 +38,7 @@ def calculate_column_width(texts)
   TAB_SIZE * (max_size / TAB_SIZE + 1)
 end
 
-list_directory_contents if $PROGRAM_NAME == __FILE__
+if $PROGRAM_NAME == __FILE__
+  options = ARGV.getopts('a')
+  list_directory_contents(all: options['a'])
+end
