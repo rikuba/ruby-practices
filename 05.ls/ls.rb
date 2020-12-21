@@ -6,8 +6,9 @@ require 'optparse'
 TAB_SIZE = 8
 MAX_COLUMNS = 3
 
-def list_directory_contents(all: false)
+def list_directory_contents(all: false, reverse: false)
   filenames = Dir.glob('*', all ? File::FNM_DOTMATCH : 0).sort
+  filenames.reverse! if reverse
   print format_as_multi_column(filenames)
 end
 
@@ -39,6 +40,6 @@ def calculate_column_width(texts)
 end
 
 if $PROGRAM_NAME == __FILE__
-  options = ARGV.getopts('a')
-  list_directory_contents(all: options['a'])
+  options = ARGV.getopts('ar')
+  list_directory_contents(all: options['a'], reverse: options['r'])
 end

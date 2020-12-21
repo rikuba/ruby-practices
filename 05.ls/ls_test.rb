@@ -38,6 +38,33 @@ class LsTest < Minitest::Test
     end
   end
 
+  def test_list_directory_contents_with_r
+    chtmpdir do
+      FileUtils.touch(FILENAMES1)
+      assert_equal <<~EXPECTED, `#{PROGRAM_PATH} -r`
+        postcss.config.js	config			Procfile
+        package.json		bin			Gemfile.lock
+        log			babel.config.js		Gemfile
+        config.ru		README.md
+      EXPECTED
+    end
+  end
+
+  def test_list_directory_contents_with_a_and_r
+    chtmpdir do
+      FileUtils.touch(FILENAMES1)
+      expected = <<~EXPECTED
+        postcss.config.js	bin			Gemfile
+        package.json		babel.config.js		..
+        log			README.md		.
+        config.ru		Procfile
+        config			Gemfile.lock
+      EXPECTED
+      assert_equal expected, `#{PROGRAM_PATH} -ar`
+      assert_equal expected, `#{PROGRAM_PATH} -ra`
+    end
+  end
+
   private
 
   def chtmpdir(&proc)
