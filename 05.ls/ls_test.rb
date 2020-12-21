@@ -38,6 +38,16 @@ class LsTest < Minitest::Test
     end
   end
 
+  private
+
+  def chtmpdir(&proc)
+    Dir.mktmpdir do |dir|
+      Dir.chdir(dir, &proc)
+    end
+  end
+end
+
+class CalculateColumnWidthTest < Minitest::Test
   def test_calculate_column_width
     assert_equal 8, calculate_column_width(['a' * 1])
     assert_equal 8, calculate_column_width(['a' * 7])
@@ -45,7 +55,9 @@ class LsTest < Minitest::Test
     assert_equal 16, calculate_column_width(['a' * 15])
     assert_equal 24, calculate_column_width(['a' * 16])
   end
+end
 
+class FormatAsMultiColumnTest < Minitest::Test
   def test_format_as_multi_column
     assert_equal "a\n", format_as_multi_column(%w[a])
     assert_equal "a\tb\n", format_as_multi_column(%w[a b])
@@ -83,13 +95,5 @@ class LsTest < Minitest::Test
       #{'b' * 24}\te\t\t\t\t#{'h' * 18}
       c\t\t\t\tf\t\t\t\ti
     EXPECTED
-  end
-
-  private
-
-  def chtmpdir(&proc)
-    Dir.mktmpdir do |dir|
-      Dir.chdir(dir, &proc)
-    end
   end
 end
