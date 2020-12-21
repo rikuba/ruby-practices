@@ -1,13 +1,27 @@
 # frozen_string_literal: true
 
+require 'fileutils'
 require 'minitest/autorun'
+require 'tmpdir'
 require_relative './ls'
 
 class LsTest < Minitest::Test
+  PROGRAM_PATH = File.absolute_path('./ls.rb')
+
   def test_list_directory_contents
-    Dir.chdir(__dir__) do
-      assert_equal <<~EXPECTED, `./ls.rb`
-        ls.rb		ls_test.rb
+    filenames = [
+      'babel.config.js', 'bin', 'config', 'config.ru', 'Gemfile',
+      'Gemfile.lock', 'log', 'package.json', 'postcss.config.js',
+      'Procfile', 'README.md'
+    ]
+
+    chtmpdir do
+      FileUtils.touch(filenames)
+      assert_equal <<~EXPECTED, `#{PROGRAM_PATH}`
+        Gemfile			babel.config.js		log
+        Gemfile.lock		bin			package.json
+        Procfile		config			postcss.config.js
+        README.md		config.ru
       EXPECTED
     end
   end
@@ -57,5 +71,13 @@ class LsTest < Minitest::Test
       #{'b' * 24}\te\t\t\t\t#{'h' * 18}
       c\t\t\t\tf\t\t\t\ti
     EXPECTED
+  end
+
+  private
+
+  def chtmpdir(&proc)
+    Dir.mktmpdir do |dir|
+      Dir.chdir(dir, &proc)
+    end
   end
 end
