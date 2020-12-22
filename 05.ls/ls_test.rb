@@ -13,7 +13,7 @@ class LsTest < Minitest::Test
     'log', 'package.json', 'postcss.config.js', 'Procfile', 'README.md'
   ].freeze
 
-  def test_list_directory_contents
+  def test_ls
     chtmpdir do
       FileUtils.touch(FILENAMES1)
       assert_equal <<~EXPECTED, `#{PROGRAM_PATH}`
@@ -25,7 +25,7 @@ class LsTest < Minitest::Test
     end
   end
 
-  def test_list_directory_contents_with_a
+  def test_ls_with_a
     chtmpdir do
       FileUtils.touch(FILENAMES1)
       assert_equal <<~EXPECTED, `#{PROGRAM_PATH} -a`
@@ -38,7 +38,7 @@ class LsTest < Minitest::Test
     end
   end
 
-  def test_list_directory_contents_with_r
+  def test_ls_with_r
     chtmpdir do
       FileUtils.touch(FILENAMES1)
       assert_equal <<~EXPECTED, `#{PROGRAM_PATH} -r`
@@ -50,7 +50,7 @@ class LsTest < Minitest::Test
     end
   end
 
-  def test_list_directory_contents_with_a_and_r
+  def test_ls_with_a_r
     chtmpdir do
       FileUtils.touch(FILENAMES1)
       expected = <<~EXPECTED
