@@ -124,3 +124,20 @@ class FormatAsMultiColumnTest < Minitest::Test
     EXPECTED
   end
 end
+
+class FormatModeTest < Minitest::Test
+  def test_format_mode
+    assert_equal 'prw-rw-rw-', format_mode(0o010666)
+    assert_equal 'crw-rw-rw-', format_mode(0o020666)  # /dev/random
+    assert_equal 'drwxr-xr-x', format_mode(0o040755)
+    assert_equal 'drwxrwxrwt', format_mode(0o041777)  # /private/tmp
+    assert_equal 'drwxrwxrwT', format_mode(0o041776)
+    assert_equal 'brw-r-----', format_mode(0o060640)  # /dev/disk1
+    assert_equal '-rw-r--r--', format_mode(0o100644)
+    assert_equal '-rwsr-xr-x', format_mode(0o104755)  # /usr/bin/su
+    assert_equal '-rwxr-sr-x', format_mode(0o102755)
+    assert_equal '-rwSr-Sr--', format_mode(0o106644)
+    assert_equal 'lr-xr-xr-x', format_mode(0o120555)  # /dev/stdin
+    assert_equal 'sr-xr--r--', format_mode(0o140544)
+  end
+end
