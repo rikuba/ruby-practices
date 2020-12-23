@@ -58,15 +58,15 @@ TAB_SIZE = 8
 MAX_COLUMNS = 3
 
 # +-l+オプションなしのフォーマットに整形する
-def format_as_multi_column(texts)
-  column_width = calculate_column_width(texts)
-  num_columns = texts.size == 4 ? 2 : [texts.size, MAX_COLUMNS].min
-  num_rows = texts.size / num_columns + [texts.size % num_columns, 1].min
+def format_as_multi_column(files)
+  column_width = calculate_column_width(files)
+  num_columns = files.size == 4 ? 2 : [files.size, MAX_COLUMNS].min
+  num_rows = files.size / num_columns + [files.size % num_columns, 1].min
 
   rows = Array.new(num_rows) do |row_index|
     line = Array.new(num_columns) do |column_index|
       index = row_index + column_index * num_rows
-      text = texts[index]
+      text = files[index]
       next '' if text.nil?
 
       space_width = column_width - text.size
