@@ -5,6 +5,20 @@ require 'date'
 require 'etc'
 require 'optparse'
 
+# 全角半角を考慮した文字列幅を取得する+String#width+を定義する
+module StringWidth
+  HALFWIDTH_KATAKANA_REGEXP = /[\uFF65-\uFF9F]/.freeze
+  FULLWIDTH_REGEXP = /[^[:ascii:]#{HALFWIDTH_KATAKANA_REGEXP}]/.freeze
+
+  refine String do
+    def width
+      size + scan(FULLWIDTH_REGEXP).size
+    end
+  end
+end
+
+using StringWidth
+
 # ディレクトリに含まれるファイルの情報を表示する
 # ==== 引数
 # * +paths: nil+: [String] - ファイルまたはディレクトリのパスを表す文字列の配列
@@ -69,7 +83,7 @@ def format_as_multi_column(files)
       text = files[index]
       next '' if text.nil?
 
-      space_width = column_width - text.size
+      space_width = column_width - text.width
       num_tabs = space_width / TAB_SIZE + [space_width % TAB_SIZE, 1].min
       text + "\t" * num_tabs
     end
@@ -83,7 +97,7 @@ end
 # カラム幅を算出する
 # 全ての文字列に対してタブ幅刻みで少なくとも1文字分のスペースが確保される文字数
 def calculate_column_width(texts)
-  max_size = texts.max_by(&:size).size
+  max_size = texts.map(&:width).max
   TAB_SIZE * (max_size / TAB_SIZE + 1)
 end
 

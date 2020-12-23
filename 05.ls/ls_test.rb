@@ -94,6 +94,14 @@ class CalculateColumnWidthTest < Minitest::Test
     assert_equal 16, calculate_column_width(['a' * 15])
     assert_equal 24, calculate_column_width(['a' * 16])
   end
+
+  def test_calculate_column_width_contains_japanese
+    assert_equal 8, calculate_column_width(['あ' * 1])
+    assert_equal 8, calculate_column_width(["#{'あ' * 3}a"])
+    assert_equal 16, calculate_column_width(['あ' * 4])
+    assert_equal 16, calculate_column_width(["aa#{'あ' * 2}aa"])
+    assert_equal 24, calculate_column_width(['あ' * 8])
+  end
 end
 
 class FormatAsMultiColumnTest < Minitest::Test
