@@ -101,6 +101,8 @@ class CalculateColumnWidthTest < Minitest::Test
     assert_equal 16, calculate_column_width(['あ' * 4])
     assert_equal 16, calculate_column_width(["aa#{'あ' * 2}aa"])
     assert_equal 24, calculate_column_width(['あ' * 8])
+    assert_equal 8, calculate_column_width(['｡' * 7])
+    assert_equal 8, calculate_column_width(['ｱ' * 7])
   end
 end
 

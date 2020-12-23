@@ -7,8 +7,11 @@ require 'optparse'
 
 # 全角半角を考慮した文字列幅を取得する+String#width+を定義する
 module StringWidth
-  HALFWIDTH_KATAKANA_REGEXP = /[\uFF65-\uFF9F]/.freeze
-  FULLWIDTH_REGEXP = /[^[:ascii:]#{HALFWIDTH_KATAKANA_REGEXP}]/.freeze
+  FULLWIDTH_REGEXP = /[^
+    [:ascii:]
+    \uFF61-\uFF64  # Halfwidth CJK punctuation
+    \uFF65-\uFF9F  # Halfwidth Katakana variants
+  ]/x.freeze
 
   refine String do
     def width
