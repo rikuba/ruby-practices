@@ -5,6 +5,12 @@ require 'date'
 require 'etc'
 require 'optparse'
 
+# ディレクトリに含まれるファイルの情報を表示する
+# ==== 引数
+# * +paths: nil+: [String] - ファイルまたはディレクトリのパスを表す文字列の配列
+# * +all: false+: bool - +true+ならドットファイルを表示する
+# * +long: false+: bool - +true+ならファイルの詳細情報を表示する
+# * +reverse: false+: bool - +true+なら逆順に表示する
 def list_directory_contents(paths: nil, all: false, long: false, reverse: false)
   dirs, files, no_files = partition_paths(paths)
 
@@ -23,6 +29,7 @@ def list_directory_contents(paths: nil, all: false, long: false, reverse: false)
   print blocks.join("\n")
 end
 
+# パス配列をディレクトリとファイルとどちらでもない要素に分割する
 def partition_paths(paths)
   paths ||= []
   paths << '.' if paths.empty?
@@ -31,12 +38,14 @@ def partition_paths(paths)
   [dirs, files, no_files].map(&:sort)
 end
 
+# ディレクトリ内に含まれるファイル名の一覧を取得する
 def get_files(dir, include_dotfiles, reverse)
   flags = include_dotfiles ? File::FNM_DOTMATCH : 0
   files = Dir.glob('*', flags: flags, base: dir).sort
   reverse ? files.reverse : files
 end
 
+# ファイルの一覧を整形した文字列として返す
 def format_files(files, dir, long)
   return format_as_multi_column(files) unless long
 
@@ -48,6 +57,7 @@ end
 TAB_SIZE = 8
 MAX_COLUMNS = 3
 
+# +-l+オプションなしのフォーマットに整形する
 def format_as_multi_column(texts)
   column_width = calculate_column_width(texts)
   num_columns = texts.size == 4 ? 2 : [texts.size, MAX_COLUMNS].min
@@ -70,11 +80,14 @@ def format_as_multi_column(texts)
   rows.join
 end
 
+# カラム幅を算出する
+# 全ての文字列に対してタブ幅刻みで少なくとも1文字分のスペースが確保される文字数
 def calculate_column_width(texts)
   max_size = texts.max_by(&:size).size
   TAB_SIZE * (max_size / TAB_SIZE + 1)
 end
 
+# +-l+オプションありのフォーマットで整形する
 def format_as_long_format(files)
   current_time = Time.now
   entries = files.map { |file| make_entry(file, current_time) }
@@ -95,10 +108,12 @@ def format_as_long_format(files)
   "total #{total_blocks}\n#{entry_lines}"
 end
 
+# ロングフォーマットの行を表すクラス
 LsEntry = Struct.new(:mode, :nlink, :owner, :group, :size_or_device, :mtime, :pathname, :blocks)
 
 SIX_MONTHS = 60 * 60 * 24 * 30 * 6
 
+# ロングフォーマットの行を表すオブジェクトを作る
 def make_entry(file, current_time)
   stat = File.lstat(file)
   mode = format_mode(stat.mode)
@@ -153,6 +168,7 @@ SET_USER_ID_BIT  = 0o0004000
 SET_GROUP_ID_BIT = 0o0002000
 STICKY_BIT       = 0o0001000
 
+# モード値からファイルの種類とパーミッションを表す文字列を作る
 def format_mode(mode)
   file_type = FILE_TYPES.find do |bitmask,|
     mode & bitmask == bitmask
