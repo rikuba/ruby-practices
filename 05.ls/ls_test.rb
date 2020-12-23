@@ -65,6 +65,18 @@ class LsTest < Minitest::Test
     end
   end
 
+  def test_ls_with_files
+    chtmpdir do
+      FileUtils.touch(FILENAMES1)
+      assert_equal "Gemfile.lock\n", `#{PROGRAM_PATH} Gemfile.lock`
+      assert_equal "Gemfile\t\tGemfile.lock\n", `#{PROGRAM_PATH} Gemfile*`
+      assert_equal <<~EXPECTED, `#{PROGRAM_PATH} *config*`
+        babel.config.js		config.ru
+        config			postcss.config.js
+      EXPECTED
+    end
+  end
+
   private
 
   def chtmpdir(&proc)

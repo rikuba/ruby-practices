@@ -5,14 +5,44 @@ require 'date'
 require 'etc'
 require 'optparse'
 
-def list_directory_contents(all: false, long: false, reverse: false)
-  filenames = Dir.glob('*', all ? File::FNM_DOTMATCH : 0).sort
-  filenames.reverse! if reverse
-  if long
-    print format_as_long_format(filenames)
-  else
-    print format_as_multi_column(filenames)
+def list_directory_contents(paths: nil, all: false, long: false, reverse: false)
+  dirs, files, no_files = partition_paths(paths)
+
+  no_files.each do |path|
+    puts "ls: #{path}: No such file or directory"
   end
+
+  blocks = []
+  blocks << format_files(files, '.', long) unless files.empty?
+
+  dirs.each do |dir|
+    files = get_files(dir, all, reverse)
+    blocks << (blocks.empty? ? '' : "#{dir}:\n") + format_files(files, dir, long)
+  end
+
+  print blocks.join("\n")
+end
+
+def partition_paths(paths)
+  paths ||= []
+  paths << '.' if paths.empty?
+  files, no_files = paths.partition { |file| File.exist?(file) }
+  dirs, files = files.partition { |file| File.directory?(file) }
+  [dirs, files, no_files].map(&:sort)
+end
+
+def get_files(dir, include_dotfiles, reverse)
+  flags = include_dotfiles ? File::FNM_DOTMATCH : 0
+  files = Dir.glob('*', flags: flags, base: dir).sort
+  reverse ? files.reverse : files
+end
+
+def format_files(files, dir, long)
+  return format_as_multi_column(files) unless long
+
+  content = nil
+  Dir.chdir(dir) { content = format_as_long_format(files) }
+  content
 end
 
 TAB_SIZE = 8
@@ -45,9 +75,9 @@ def calculate_column_width(texts)
   TAB_SIZE * (max_size / TAB_SIZE + 1)
 end
 
-def format_as_long_format(filenames)
+def format_as_long_format(files)
   current_time = Time.now
-  entries = filenames.map { |filename| make_entry(filename, current_time) }
+  entries = files.map { |file| make_entry(file, current_time) }
 
   total_blocks = entries.sum(&:blocks)
   nlink_width = entries.map(&:nlink).max.to_s.size
@@ -69,8 +99,8 @@ LsEntry = Struct.new(:mode, :nlink, :owner, :group, :size_or_device, :mtime, :pa
 
 SIX_MONTHS = 60 * 60 * 24 * 30 * 6
 
-def make_entry(filename, current_time)
-  stat = File.lstat(filename)
+def make_entry(file, current_time)
+  stat = File.lstat(file)
   mode = format_mode(stat.mode)
   owner_name = get_user_name(stat.uid)
   group_name = get_group_name(stat.gid)
@@ -79,8 +109,8 @@ def make_entry(filename, current_time)
   last_modified = mtime.strftime('%m %d ').tr('0', ' ')
   diff = current_time - mtime
   last_modified += diff.abs <= SIX_MONTHS ? mtime.strftime('%H:%M') : " #{mtime.year}"
-  pathname = filename
-  pathname += " -> #{File.realpath(filename)}" if stat.symlink?
+  pathname = file
+  pathname += " -> #{File.realpath(file)}" if stat.symlink?
 
   LsEntry.new(
     mode, stat.nlink, owner_name, group_name, size_or_device,
@@ -142,6 +172,7 @@ end
 if $PROGRAM_NAME == __FILE__
   options = ARGV.getopts('alr')
   list_directory_contents(
+    paths: ARGV,
     all: options['a'],
     long: options['l'],
     reverse: options['r']
