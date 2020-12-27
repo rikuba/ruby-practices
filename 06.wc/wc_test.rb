@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 require 'minitest/autorun'
-require 'tempfile'
 require './wc'
 
 PROGRAM_PATH = File.absolute_path('./wc.rb')
@@ -9,25 +8,25 @@ LOREM_IPSUM = 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do e
 
 class WcTest < Minitest::Test
   def test_wc_stdin
-    assert_stdin "       0       4      14\n", 'This is a test'
-    assert_stdin "       1       4      15\n", "This is a test\n"
-    assert_stdin "       1       6      25\n", "This is a test\nExtra text"
-    assert_stdin "       1       4      15\n", "This\tis\va\ftest\n"
-    assert_stdin "       1       4      15\n", "This\nis\ra\u00A0test"
-    assert_stdin "       1       4      18\n", " This is a test \n\t"
-    assert_stdin "       1       1      28\n", "　日本語のテスト　\n"
-    assert_stdin "       4       0       7\n", "\n\r\n\n\r\r\n"
-    assert_stdin "       2       0       6\n", "\t\n\r\f\n\v"
-    assert_stdin "  100000 1900000 12400000\n", "#{LOREM_IPSUM}\n" * 10**5
+    assert_equal "       0       4      14\n", `printf 'This is a test' | #{PROGRAM_PATH}`
+    assert_equal "       1       4      15\n", `printf 'This is a test\\n' | #{PROGRAM_PATH}`
+    assert_equal "       1       6      25\n", `printf 'This is a test\\nExtra text' | #{PROGRAM_PATH}`
+    assert_equal "       1       4      15\n", `printf 'This\\tis\\va\\ftest\\n' | #{PROGRAM_PATH}`
+    assert_equal "       1       4      15\n", `printf 'This\\nis\\ra\u00A0test' | #{PROGRAM_PATH}`
+    assert_equal "       1       4      18\n", `printf ' This is a test \\n\\t' | #{PROGRAM_PATH}`
+    assert_equal "       1       1      28\n", `printf '　日本語のテスト　\\n' | #{PROGRAM_PATH}`
+    assert_equal "       4       0       7\n", `printf '\\n\\r\\n\\n\\r\\r\\n' | #{PROGRAM_PATH}`
+    assert_equal "       2       0       6\n", `printf '\\t\\n\\r\\f\\n\\v' | #{PROGRAM_PATH}`
+    assert_equal "  100000 1900000 12400000\n", `printf '#{LOREM_IPSUM}\\n%.0s' {1..100000} | #{PROGRAM_PATH}`
   end
 
   def test_wc_l_stdin
-    assert_stdin "       0\n", 'This is a test', '-l'
-    assert_stdin "       1\n", "This is a test\n", '-l'
-    assert_stdin "       1\n", "This is a test\nExtra text", '-l'
-    assert_stdin "       4\n", "\n\r\n\n\r\r\n", '-l'
-    assert_stdin "       2\n", "\t\n\r\f\n\v", '-l'
-    assert_stdin "    1000\n", "\n" * 1000, '-l'
+    assert_equal "       0\n", `printf 'This is a test' | #{PROGRAM_PATH} -l`
+    assert_equal "       1\n", `printf 'This is a test\\n' | #{PROGRAM_PATH} -l`
+    assert_equal "       1\n", `printf 'This is a test\\nExtra text' | #{PROGRAM_PATH} -l`
+    assert_equal "       4\n", `printf '\\n\\r\\n\\n\\r\\r\\n' | #{PROGRAM_PATH} -l`
+    assert_equal "       2\n", `printf '\\t\\n\\r\\f\\n\\v' | #{PROGRAM_PATH} -l`
+    assert_equal "    1000\n", `printf '\\n%.s' {1..1000} | #{PROGRAM_PATH} -l`
   end
 
   def test_wc_file
@@ -63,15 +62,5 @@ class WcTest < Minitest::Test
       wc: ..: read: Is a directory
              0       0       0 total
     EXPECTED
-  end
-
-  private
-
-  def assert_stdin(expected, text, options = '')
-    Tempfile.create do |file|
-      file.write(text)
-      file.close
-      assert_equal expected, `cat #{file.path} | #{PROGRAM_PATH} #{options}`
-    end
   end
 end
