@@ -50,6 +50,7 @@ if $PROGRAM_NAME == __FILE__
     puts format_counts(counts)
   else
     total_counts = [0] * counters.size
+    has_error = false
 
     paths.each do |path|
       begin
@@ -60,6 +61,7 @@ if $PROGRAM_NAME == __FILE__
         end
       rescue SystemCallError => e
         warn "wc: #{path}: #{fail_method}: #{e.message.sub(/ @ .*\Z/, '')}"
+        has_error = true
         next
       end
 
@@ -69,5 +71,6 @@ if $PROGRAM_NAME == __FILE__
     end
 
     puts format_counts(total_counts, 'total') if paths.size > 1
+    abort if has_error
   end
 end

@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require 'minitest/autorun'
+require 'open3'
 require './wc'
 
 PROGRAM_PATH = File.absolute_path('./wc.rb')
@@ -52,15 +53,24 @@ class WcTest < Minitest::Test
   end
 
   def test_wc_no_file
-    assert_equal <<~EXPECTED, `./wc.rb aaa bbb 2>&1`
+    stdout, stderr, status = Open3.capture3('./wc.rb', 'aaa', 'bbb')
+    assert_equal <<~EXPECTED, stdout
+      \       0       0       0 total
+    EXPECTED
+    assert_equal <<~EXPECTED, stderr
       wc: aaa: open: No such file or directory
       wc: bbb: open: No such file or directory
-             0       0       0 total
     EXPECTED
-    assert_equal <<~EXPECTED, `./wc.rb . .. 2>&1`
+    assert_equal 1, status.exitstatus
+
+    stdout, stderr, status = Open3.capture3('./wc.rb', '.', '..')
+    assert_equal <<~EXPECTED, stdout
+      \       0       0       0 total
+    EXPECTED
+    assert_equal <<~EXPECTED, stderr
       wc: .: read: Is a directory
       wc: ..: read: Is a directory
-             0       0       0 total
     EXPECTED
+    assert_equal 1, status.exitstatus
   end
 end
