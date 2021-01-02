@@ -3,12 +3,9 @@
 require 'date'
 require 'optparse'
 
-WIDTH = 20
-WDAY = '日月火水木金土'
-
-def makeCalendar(year, month)
-  caption = "#{month}月 #{year}".center(WIDTH)
-  header = WDAY.chars.join(' ')
+def make_calendar(year, month)
+  caption = "#{month}月 #{year}".center(20)
+  header = '日 月 火 水 木 金 土'
   
   first = Date.new(year, month, 1)
   last = Date.new(year, month, -1)
@@ -23,11 +20,8 @@ end
 
 params = ARGV.getopts('y:m:')
 
-year = params['y'].to_i
-year = Date.today.year if year == 0
+year = params['y']&.to_i || Date.today.year
+month = params['m']&.to_i || Date.today.month
 
-month = params['m'].to_i
-month = Date.today.month if month == 0
-
-puts makeCalendar(year, month).join("\n")
-puts # 空行を出力
+puts make_calendar(year, month)
+puts ''
