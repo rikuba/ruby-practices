@@ -8,6 +8,8 @@ class Frame
   end
 
   def mark(shot)
+    raise 'This frame cannot mark anymore' if done?
+
     @shots << shot
   end
 
@@ -23,7 +25,7 @@ class Frame
   end
 
   def strike?
-    @shots.first.score == 10
+    !@shots.empty? && @shots.first.score == 10
   end
 
   def spare?
