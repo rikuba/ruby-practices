@@ -3,6 +3,12 @@
 class Shot
   attr_reader :mark, :prev, :next
 
+  def self.create_sequence(*marks)
+    marks.inject([]) do |shots, mark|
+      shots << Shot.new(mark, prev: shots.last)
+    end
+  end
+
   def initialize(mark, prev: nil)
     @mark = mark
     prev&.next = self

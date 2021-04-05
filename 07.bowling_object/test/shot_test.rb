@@ -21,4 +21,24 @@ class ShotTest < Test::Unit::TestCase
     assert_equal first_shot, second_shot.prev
     assert_nil second_shot.next
   end
+
+  test 'create_sequence' do
+    shots = Shot.create_sequence('X', '7', '3')
+    assert_instance_of Array, shots
+    assert_equal 3, shots.size
+    assert_instance_of Shot, shots[0]
+    assert_instance_of Shot, shots[1]
+    assert_instance_of Shot, shots[2]
+
+    assert_equal 10, shots[0].score
+    assert_equal  7, shots[1].score
+    assert_equal  3, shots[2].score
+
+    assert_nil shots[0].prev
+    assert_equal shots[1], shots[0].next
+    assert_equal shots[0], shots[1].prev
+    assert_equal shots[2], shots[1].next
+    assert_equal shots[1], shots[2].prev
+    assert_nil shots[2].next
+  end
 end
