@@ -1,25 +1,22 @@
 # frozen_string_literal: true
 
 class Shot
-  attr_reader :mark, :prev, :next
+  attr_accessor :next
+  attr_reader :mark
 
   def self.create_sequence(*marks)
-    marks.inject([]) do |shots, mark|
-      shots << Shot.new(mark, prev: shots.last)
+    shots = marks.map { |mark| Shot.new(mark) }
+    shots.each_cons(2) do |prev_shot, next_shot|
+      prev_shot.next = next_shot
     end
+    shots
   end
 
-  def initialize(mark, prev: nil)
+  def initialize(mark)
     @mark = mark
-    prev&.next = self
-    self.prev = prev
   end
 
   def score
     mark == 'X' ? 10 : mark.to_i
   end
-
-  protected
-
-  attr_writer :prev, :next
 end

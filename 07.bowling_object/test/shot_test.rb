@@ -13,15 +13,6 @@ class ShotTest < Test::Unit::TestCase
     assert_equal 9, Shot.new('9').score
   end
 
-  test 'linkable' do
-    first_shot = Shot.new('8')
-    second_shot = Shot.new('2', prev: first_shot)
-    assert_nil first_shot.prev
-    assert_equal second_shot, first_shot.next
-    assert_equal first_shot, second_shot.prev
-    assert_nil second_shot.next
-  end
-
   test 'create_sequence' do
     shots = Shot.create_sequence('X', '7', '3')
     assert_instance_of Array, shots
@@ -34,11 +25,8 @@ class ShotTest < Test::Unit::TestCase
     assert_equal  7, shots[1].score
     assert_equal  3, shots[2].score
 
-    assert_nil shots[0].prev
     assert_equal shots[1], shots[0].next
-    assert_equal shots[0], shots[1].prev
     assert_equal shots[2], shots[1].next
-    assert_equal shots[1], shots[2].prev
     assert_nil shots[2].next
   end
 end
