@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 class Frame
+  attr_accessor :next
   attr_reader :shots
 
   def initialize
