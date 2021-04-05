@@ -7,7 +7,7 @@ require_relative '../lib/shot'
 module Bowling
   class LastFrameTest < Test::Unit::TestCase
     test 'mark strike' do
-      shots = Shot.create_sequence('X', '4', '3')
+      shots = Bowling.create_shots('X', '4', '3')
       frame = LastFrame.new
       frame.mark(shots[0])
       frame.mark(shots[1])
@@ -18,7 +18,7 @@ module Bowling
     end
 
     test 'mark strike out' do
-      shots = Shot.create_sequence('X', 'X', 'X')
+      shots = Bowling.create_shots('X', 'X', 'X')
       frame = LastFrame.new
       frame.mark(shots[0])
       frame.mark(shots[1])
@@ -29,7 +29,7 @@ module Bowling
     end
 
     test 'mark spare' do
-      shots = Shot.create_sequence('5', '5', '2')
+      shots = Bowling.create_shots('5', '5', '2')
       frame = LastFrame.new
       frame.mark(shots[0])
       frame.mark(shots[1])
@@ -40,7 +40,7 @@ module Bowling
     end
 
     test 'mark open frame' do
-      shots = Shot.create_sequence('7', '1')
+      shots = Bowling.create_shots('7', '1')
       frame = LastFrame.new
       frame.mark(shots[0])
       frame.mark(shots[1])

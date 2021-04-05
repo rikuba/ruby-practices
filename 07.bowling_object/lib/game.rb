@@ -24,7 +24,7 @@ module Bowling
 
     def load_marks(marks)
       marks = marks.split(',') if marks.is_a? String
-      shots = Shot.create_sequence(*marks)
+      shots = Bowling.create_shots(*marks)
       frame = frames.first
       shots.each do |shot|
         frame.mark(shot)
