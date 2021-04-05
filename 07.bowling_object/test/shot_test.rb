@@ -15,7 +15,7 @@ module Bowling
     end
 
     test 'create_sequence' do
-      shots = Bowling.create_shots('X', '7', '3')
+      shots = Bowling.create_shots(%w[X 7 3])
       assert_instance_of Array, shots
       assert_equal 3, shots.size
       assert_instance_of Shot, shots[0]

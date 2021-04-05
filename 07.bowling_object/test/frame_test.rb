@@ -7,7 +7,7 @@ require_relative '../lib/shot'
 module Bowling
   class FrameTest < Test::Unit::TestCase
     test 'mark strike' do
-      shots = Bowling.create_shots('X', '1', '2', '3')
+      shots = Bowling.create_shots(%w[X 1 2 3])
       frame = Frame.new
       frame.mark(shots[0])
       assert frame.done?
@@ -16,7 +16,7 @@ module Bowling
     end
 
     test 'mark spare' do
-      shots = Bowling.create_shots('6', '4', '5', '3')
+      shots = Bowling.create_shots(%w[6 4 5 3])
       frame = Frame.new
       frame.mark(shots[0])
       frame.mark(shots[1])
@@ -26,7 +26,7 @@ module Bowling
     end
 
     test 'mark open frame' do
-      shots = Bowling.create_shots('5', '3', '1', '2')
+      shots = Bowling.create_shots(%w[5 3 1 2])
       frame = Frame.new
       frame.mark(shots[0])
       frame.mark(shots[1])
