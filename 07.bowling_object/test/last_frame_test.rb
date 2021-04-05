@@ -4,48 +4,50 @@ require 'test/unit'
 require_relative '../lib/last_frame'
 require_relative '../lib/shot'
 
-class LastFrameTest < Test::Unit::TestCase
-  test 'mark strike' do
-    shots = Shot.create_sequence('X', '4', '3')
-    frame = LastFrame.new
-    frame.mark(shots[0])
-    frame.mark(shots[1])
-    frame.mark(shots[2])
-    assert frame.done?
-    assert frame.strike?
-    assert_equal 10 + 4 + 3, frame.score
-  end
+module Bowling
+  class LastFrameTest < Test::Unit::TestCase
+    test 'mark strike' do
+      shots = Shot.create_sequence('X', '4', '3')
+      frame = LastFrame.new
+      frame.mark(shots[0])
+      frame.mark(shots[1])
+      frame.mark(shots[2])
+      assert frame.done?
+      assert frame.strike?
+      assert_equal 10 + 4 + 3, frame.score
+    end
 
-  test 'mark strike out' do
-    shots = Shot.create_sequence('X', 'X', 'X')
-    frame = LastFrame.new
-    frame.mark(shots[0])
-    frame.mark(shots[1])
-    frame.mark(shots[2])
-    assert frame.done?
-    assert frame.strike?
-    assert_equal 10 + 10 + 10, frame.score
-  end
+    test 'mark strike out' do
+      shots = Shot.create_sequence('X', 'X', 'X')
+      frame = LastFrame.new
+      frame.mark(shots[0])
+      frame.mark(shots[1])
+      frame.mark(shots[2])
+      assert frame.done?
+      assert frame.strike?
+      assert_equal 10 + 10 + 10, frame.score
+    end
 
-  test 'mark spare' do
-    shots = Shot.create_sequence('5', '5', '2')
-    frame = LastFrame.new
-    frame.mark(shots[0])
-    frame.mark(shots[1])
-    frame.mark(shots[2])
-    assert frame.done?
-    assert frame.spare?
-    assert_equal 5 + 5 + 2, frame.score
-  end
+    test 'mark spare' do
+      shots = Shot.create_sequence('5', '5', '2')
+      frame = LastFrame.new
+      frame.mark(shots[0])
+      frame.mark(shots[1])
+      frame.mark(shots[2])
+      assert frame.done?
+      assert frame.spare?
+      assert_equal 5 + 5 + 2, frame.score
+    end
 
-  test 'mark open frame' do
-    shots = Shot.create_sequence('7', '1')
-    frame = LastFrame.new
-    frame.mark(shots[0])
-    frame.mark(shots[1])
-    assert frame.done?
-    assert_false frame.strike?
-    assert_false frame.spare?
-    assert_equal 7 + 1, frame.score
+    test 'mark open frame' do
+      shots = Shot.create_sequence('7', '1')
+      frame = LastFrame.new
+      frame.mark(shots[0])
+      frame.mark(shots[1])
+      assert frame.done?
+      assert_false frame.strike?
+      assert_false frame.spare?
+      assert_equal 7 + 1, frame.score
+    end
   end
 end
