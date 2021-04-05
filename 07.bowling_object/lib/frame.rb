@@ -12,7 +12,10 @@ class Frame
   end
 
   def score
-    @shots.sum(&:score)
+    total = shots_score
+    total += @shots.last.next.score if strike? || spare?
+    total += @shots.last.next.next.score if strike?
+    total
   end
 
   def done?
@@ -20,10 +23,16 @@ class Frame
   end
 
   def strike?
-    @shots[0].score == 10
+    @shots.first.score == 10
   end
 
   def spare?
-    !strike? && score == 10
+    !strike? && shots_score == 10
+  end
+
+  private
+
+  def shots_score
+    @shots.sum(&:score)
   end
 end
