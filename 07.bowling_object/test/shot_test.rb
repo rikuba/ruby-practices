@@ -12,4 +12,13 @@ class ShotTest < Test::Unit::TestCase
     assert_equal 0, Shot.new('0').score
     assert_equal 9, Shot.new('9').score
   end
+
+  test 'linkable' do
+    first_shot = Shot.new('8')
+    second_shot = Shot.new('2', prev: first_shot)
+    assert_nil first_shot.prev
+    assert_equal second_shot, first_shot.next
+    assert_equal first_shot, second_shot.prev
+    assert_nil second_shot.next
+  end
 end

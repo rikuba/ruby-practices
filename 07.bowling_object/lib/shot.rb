@@ -1,10 +1,12 @@
 # frozen_string_literal: true
 
 class Shot
-  attr_reader :mark
+  attr_reader :mark, :prev, :next
 
-  def initialize(mark)
+  def initialize(mark, prev: nil)
     @mark = mark
+    prev&.next = self
+    self.prev = prev
   end
 
   def score
@@ -12,4 +14,8 @@ class Shot
 
     mark.to_i
   end
+
+  protected
+
+  attr_writer :prev, :next
 end
