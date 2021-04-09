@@ -16,7 +16,7 @@ module Ls
 
     def self.ls(*argv)
       define_method("test ls #{argv.join(' ')}") do
-        expected = `ls #{argv.join(' ')}`
+        expected = Dir.chdir(@base) { `ls #{argv.join(' ')}` }
         runner = Runner.new(base: @base, stdout: @stdout, stderr: @stderr)
         runner.run(argv)
         assert_equal expected, @stdout.string
