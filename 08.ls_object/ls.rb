@@ -8,5 +8,6 @@ require_relative './lib/script_options'
 if $PROGRAM_NAME == __FILE__
   *, width = IO.console_size
 
-  Ls::Runner.run(width: width)
+  runner = Ls::Runner.new(width: width)
+  runner.run(ARGV)
 end

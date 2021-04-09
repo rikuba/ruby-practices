@@ -17,6 +17,7 @@ module Ls
       assert_equal ['.'], @options.dir_paths
       assert_equal [], @options.error_paths
       assert_equal false, @options.all
+      assert_equal false, @options.long
       assert_equal false, @options.reverse
     end
 
@@ -27,6 +28,7 @@ module Ls
       assert_equal ['01.fizzbuzz'], @options.dir_paths
       assert_equal [], @options.error_paths
       assert_equal true, @options.all
+      assert_equal false, @options.long
       assert_equal false, @options.reverse
     end
 
@@ -37,6 +39,18 @@ module Ls
       assert_equal [], @options.dir_paths
       assert_equal ['00.not_found'], @options.error_paths
       assert_equal false, @options.all
+      assert_equal false, @options.long
+      assert_equal true, @options.reverse
+    end
+
+    test 'parse some paths and all option' do
+      @options.parse(['.', '-al', '05.ls/.gitkeep', '-r', '00.not_found'])
+
+      assert_equal ['05.ls/.gitkeep'], @options.file_paths
+      assert_equal ['.'], @options.dir_paths
+      assert_equal ['00.not_found'], @options.error_paths
+      assert_equal true, @options.all
+      assert_equal true, @options.long
       assert_equal true, @options.reverse
     end
   end

@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require 'test/unit'
+require_relative '../lib/file_entry'
 require_relative '../lib/file_list'
 
 module Ls
@@ -10,7 +11,10 @@ module Ls
         Gemfile Gemfile.lock README.md Rakefile app babel.config.js bin config
         config.ru db lib log node_modules package.json postcss.config.js
         public storage test tmp vendor yarn.lock
-      ]
+      ].map do |name|
+        FileEntry.new(name)
+      end
+
       @file_list = FileList.new(files)
     end
 

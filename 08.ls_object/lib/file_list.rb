@@ -3,15 +3,15 @@
 module Ls
   class FileList
     def initialize(files)
-      @files = files
+      @file_names = files.map(&:name)
     end
 
     def render(params)
-      column_width = @files.map(&:size).max + 1
-      num_columns = (params[:width] / column_width).clamp(1..nil)
-      num_rows = (@files.size / num_columns.to_f).ceil
+      column_width = @file_names.map(&:size).max + 1
+      num_columns = [params[:width] / column_width, 1].max
+      num_rows = (@file_names.size / num_columns.to_f).ceil
 
-      columns = @files.each_slice(num_rows).to_a
+      columns = @file_names.each_slice(num_rows).to_a
       rows = transpose(columns)
 
       rows.map do |row|
