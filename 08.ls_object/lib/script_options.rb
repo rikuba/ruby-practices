@@ -4,10 +4,13 @@ require 'optparse'
 
 module Ls
   class ScriptOptions
-    attr_reader :all, :paths, :reverse
+    attr_reader :file_paths, :dir_paths, :error_paths, :all, :reverse
 
-    def initialize
-      @paths = []
+    def initialize(base: Dir.getwd)
+      @base = base
+      @file_paths = []
+      @dir_paths = []
+      @error_paths = []
       @all = false
       @reverse = false
 
@@ -18,8 +21,19 @@ module Ls
     end
 
     def parse(argv)
-      @paths = @option_parser.parse(argv)
-      @paths << '.' if @paths.empty?
+      paths = @option_parser.parse(argv)
+      paths << '.' if paths.empty?
+      paths.each do |path|
+        expanded_path = File.expand_path(path, @base)
+        if File.file?(expanded_path)
+          @file_paths << path
+        elsif File.directory?(expanded_path)
+          @dir_paths << path
+        else
+          @error_paths << path
+        end
+      end
+      [@file_paths, @dir_paths, @error_paths].map(&:sort!)
       self
     end
   end
