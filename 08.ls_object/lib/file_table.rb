@@ -33,6 +33,13 @@ module Ls
   end
 
   class FileTable::Row
+    TIME_FORMAT_STRING =
+      if ENV['LANG']&.start_with?('ja_JP')
+        '%_m %_d %H:%M'
+      else
+        '%b %_d %H:%M'
+      end
+
     def initialize(file)
       @name = file.name
       @stat = file.stat
@@ -77,7 +84,7 @@ module Ls
     end
 
     def mtime
-      @stat.mtime.strftime('%b %_d %H:%M')
+      @stat.mtime.strftime(TIME_FORMAT_STRING)
     end
   end
 end
