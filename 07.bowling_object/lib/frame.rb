@@ -28,13 +28,10 @@ module Bowling
     end
 
     def bonus_count
-      if strike?
-        2
-      elsif spare?
-        1
-      else
-        0
-      end
+      return 2 if strike?
+      return 1 if spare?
+
+      0
     end
   end
 end
