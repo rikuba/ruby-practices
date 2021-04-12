@@ -6,8 +6,6 @@ require_relative './last_frame'
 
 module Bowling
   class Game
-    attr_reader :frames
-
     def initialize(marks)
       shots = marks.split(',').map do |mark|
         Shot.new(mark)
