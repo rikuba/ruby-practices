@@ -2,8 +2,6 @@
 
 module Bowling
   class Frame
-    attr_reader :shots
-
     def initialize(shots)
       @shots = []
       (@shots << shots.shift) until shots.empty? || done?
