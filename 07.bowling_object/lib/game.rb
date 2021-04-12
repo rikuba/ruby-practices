@@ -9,11 +9,12 @@ module Bowling
     attr_reader :frames
 
     def initialize(marks)
-      @frames = Array.new(9) { Frame.new } << LastFrame.new
-      @frames.each_cons(2) do |prev_frame, next_frame|
-        prev_frame.next = next_frame
+      shots = marks.split(',').map do |mark|
+        Shot.new(mark)
       end
-      load_marks(marks)
+
+      @frames = []
+      add_frame(shots) until shots.empty?
     end
 
     def score
@@ -22,14 +23,13 @@ module Bowling
 
     private
 
-    def load_marks(marks)
-      marks = marks.split(',') if marks.is_a? String
-      shots = Bowling.create_shots(marks)
-      frame = frames.first
-      shots.each do |shot|
-        frame.mark(shot)
-        frame = frame.next if frame.done?
-      end
+    def add_frame(shots)
+      @frames <<
+        if @frames.size < 9
+          Frame.new(shots)
+        else
+          LastFrame.new(shots)
+        end
     end
   end
 end
