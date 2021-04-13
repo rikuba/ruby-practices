@@ -58,7 +58,7 @@ module Ls
     def collect_files(dir, all: false, reverse: false)
       base = File.expand_path(dir, @base)
       flags = all ? File::FNM_DOTMATCH : 0
-      file_names = Dir.glob('*', flags, base: base)
+      file_names = Dir.glob('*', flags, base: base).sort
       file_names.reverse! if reverse
       file_names.map do |name|
         FileEntry.new(name, base: base)
