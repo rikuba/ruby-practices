@@ -1,6 +1,5 @@
 # frozen_string_literal: true
 
-require 'io/console/size'
 require 'stringio'
 require 'test/unit'
 require_relative '../lib/runner'
@@ -11,10 +10,9 @@ module Ls
       @base = File.expand_path('../..', __dir__)
       @stdout = StringIO.new
       @stderr = StringIO.new
-      *, @width = IO.console_size
     end
 
-    def self.ls(*argv)
+    def self.ls(argv)
       define_method("test ls #{argv.join(' ')}") do
         expected = Dir.chdir(@base) { `ls #{argv.join(' ')}` }
         runner = Runner.new(base: @base, stdout: @stdout, stderr: @stderr)
@@ -25,12 +23,9 @@ module Ls
 
     private_class_method :ls
 
-    ls '-l'
-
-    ls '-lr'
-
-    ls '-l', '05.ls'
-
-    ls '-lr', '.gitignore', '.', 'README.md', '05.ls'
+    ls %w[-l]
+    ls %w[-lr]
+    ls %w[-l 05.ls]
+    ls %w[-lr .gitignore . README.md 05.ls]
   end
 end
