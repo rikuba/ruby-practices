@@ -5,7 +5,7 @@ require 'io/console/size'
 require_relative './lib/runner'
 
 if $PROGRAM_NAME == __FILE__
-  *, width = IO.console_size
+  _, width = IO.console_size
 
   runner = Ls::Runner.new(width: width)
   runner.run(ARGV)
