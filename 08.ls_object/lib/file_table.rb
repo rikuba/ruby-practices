@@ -17,7 +17,7 @@ module Ls
         column.map(&:size).max
       end
 
-      format_string = "%幅s %幅d %幅s  %幅s  %幅d %幅s %s\n".gsub('幅') { widths.shift }
+      format_string = "%*s %*d %*s  %*s  %*d %*s %s\n".gsub('*') { widths.shift }
 
       (params[:blocks] ? total_blocks : '') + rows.map do |cells|
         format(format_string, *cells)
