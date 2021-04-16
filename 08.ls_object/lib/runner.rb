@@ -16,7 +16,7 @@ module Ls
 
     def run(argv)
       options = Ls::ScriptOptions.new(base: @base).parse(argv)
-      renderer_class = options.long ? FileTable : FileList
+      renderer_class = options.long? ? FileTable : FileList
 
       warn_error_paths(options.error_paths)
 
@@ -33,7 +33,7 @@ module Ls
       label_needed = !options.file_paths.empty? || options.dir_paths.size >= 2
 
       options.dir_paths.each do |path|
-        files = collect_files(path, all: options.all, reverse: options.reverse)
+        files = collect_files(path, all: options.all?, reverse: options.reverse?)
         renderer = renderer_class.new(files)
         groups << render_files(renderer: renderer, blocks: true, path: label_needed && path)
       end

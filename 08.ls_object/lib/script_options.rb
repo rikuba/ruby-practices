@@ -4,7 +4,7 @@ require 'optparse'
 
 module Ls
   class ScriptOptions
-    attr_reader :file_paths, :dir_paths, :error_paths, :all, :long, :reverse
+    attr_reader :file_paths, :dir_paths, :error_paths
 
     def initialize(base: Dir.getwd)
       @base = base
@@ -31,6 +31,18 @@ module Ls
       [@file_paths, @dir_paths, @error_paths].each(&:sort!)
       [@file_paths, @dir_paths].each(&:reverse!) if @reverse
       self
+    end
+
+    def all?
+      @all
+    end
+
+    def long?
+      @long
+    end
+
+    def reverse?
+      @reverse
     end
 
     private
