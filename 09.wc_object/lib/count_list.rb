@@ -13,8 +13,6 @@ module Wc
         format('%*d', width, count)
       end.join
 
-      count_text.prepend(' ') unless count_text.start_with?(' ')
-
       count_text + (label ? " #{label}" : '')
     end
   end
