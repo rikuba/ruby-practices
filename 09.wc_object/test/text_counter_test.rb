@@ -1,14 +1,14 @@
 # frozen_string_literal: true
 
 require 'test/unit'
-require_relative '../lib/counter'
+require_relative '../lib/text_counter'
 
 module Wc
-  class CounterTest < Test::Unit::TestCase
+  class TextCounterTest < Test::Unit::TestCase
     test 'count' do
       hello_world = read_file('fixtures/hello_world.md')
       lorem_ipsum = read_file('fixtures/lorem_ipsum.txt')
-      counter = Counter.new(%i[lines words bytes])
+      counter = TextCounter.new(%i[lines words bytes])
       assert_equal({ lines: 3, words: 3,  bytes: 29  }, counter.count(hello_world))
       assert_equal({ lines: 3, words: 19, bytes: 124 }, counter.count(lorem_ipsum))
     end

@@ -1,9 +1,9 @@
 # frozen_string_literal: true
 
-require_relative './text_utils'
-
 module Wc
-  class Counter
+  class TextCounter
+    WORD_REGEXP = /[[:^space:]]+/.freeze
+
     def initialize(count_types)
       @count_types = count_types
     end
@@ -19,13 +19,13 @@ module Wc
     def count_content(type, text)
       case type
       when :bytes
-        TextUtils.bytes(text)
+        text.bytesize
       when :lines
-        TextUtils.lines(text)
+        text.count("\n")
       when :chars
-        TextUtils.chars(text)
+        text.size
       when :words
-        TextUtils.words(text)
+        text.scan(WORD_REGEXP).size
       end
     end
   end

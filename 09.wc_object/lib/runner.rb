@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
-require_relative './counter'
 require_relative './count_list'
 require_relative './script_options'
+require_relative './text_counter'
 
 module Wc
   class Runner
@@ -25,14 +25,14 @@ module Wc
     private
 
     def run_with_stdin(options)
-      counter = Counter.new(options.count_types)
+      counter = TextCounter.new(options.count_types)
       input = @stdin.read
       counts = counter.count(input)
       output_counts(counts)
     end
 
     def run_with_files(options)
-      counter = Counter.new(options.count_types)
+      counter = TextCounter.new(options.count_types)
 
       counts_by_path = options.paths.to_h do |path|
         full_path = File.expand_path(path, @base)
