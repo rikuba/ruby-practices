@@ -16,10 +16,18 @@ module Wc
 
     def parse(argv)
       option_parser = OptionParser.new do |parser|
-        parser.on('-c') { @count_types << :bytes }
         parser.on('-l') { @count_types << :lines }
-        parser.on('-m') { @count_types << :chars }
         parser.on('-w') { @count_types << :words }
+
+        # -c and -m options are exclusive
+        parser.on('-c') do
+          @count_types.delete(:chars)
+          @count_types << :bytes
+        end
+        parser.on('-m') do
+          @count_types.delete(:bytes)
+          @count_types << :chars
+        end
       end
 
       @paths = option_parser.parse(argv)

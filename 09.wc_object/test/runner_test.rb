@@ -41,21 +41,39 @@ module Wc
       assert_equal "       3 fixtures/lorem_ipsum.txt\n", @stdout.string
     end
 
-    test 'run with one file and -c and -m options' do
-      @runner.run(%w[-cm fixtures/hello_world.md])
-
-      assert_equal "      13      29 fixtures/hello_world.md\n", @stdout.string
-    end
-
-    test 'run with three files and all options' do
-      @runner.run(%w[-clmw fixtures/lorem_ipsum.txt ../.gitkeep fixtures/hello_world.md])
+    test 'run with three files and -c and -l options' do
+      @runner.run(%w[-cl fixtures/lorem_ipsum.txt ../.gitkeep fixtures/hello_world.md])
 
       assert_equal <<~EXPECTED, @stdout.string
-        \       3      19     124     124 fixtures/lorem_ipsum.txt
-        \       0       0       0       0 ../.gitkeep
-        \       3       3      13      29 fixtures/hello_world.md
-        \       6      22     137     153 total
+        \       3     124 fixtures/lorem_ipsum.txt
+        \       0       0 ../.gitkeep
+        \       3      29 fixtures/hello_world.md
+        \       6     153 total
       EXPECTED
+    end
+
+    test 'options should always be sorted in the same order' do
+      @runner.run(%w[-lmw fixtures/lorem_ipsum.txt])
+      @runner.run(%w[-cwl fixtures/lorem_ipsum.txt])
+      @runner.run(%w[-wlm fixtures/lorem_ipsum.txt])
+
+      assert_equal <<~EXPECTED, @stdout.string
+        \       3      19     124 fixtures/lorem_ipsum.txt
+        \       3      19     124 fixtures/lorem_ipsum.txt
+        \       3      19     124 fixtures/lorem_ipsum.txt
+      EXPECTED
+    end
+
+    test 'should enable -c when -c is specified after -m' do
+      @runner.run(%w[-mc fixtures/hello_world.md])
+
+      assert_equal "      29 fixtures/hello_world.md\n", @stdout.string
+    end
+
+    test 'should enable -m when -m is specified after -c' do
+      @runner.run(%w[-cm fixtures/hello_world.md])
+
+      assert_equal "      13 fixtures/hello_world.md\n", @stdout.string
     end
   end
 end
