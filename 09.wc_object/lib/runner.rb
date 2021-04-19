@@ -6,14 +6,10 @@ require_relative './script_options'
 
 module Wc
   class Runner
-    attr_reader :status
-
-    def initialize(base: Dir.getwd, stdin: $stdin, stdout: $stdout, stderr: $stderr)
+    def initialize(base: Dir.getwd, stdin: $stdin, stdout: $stdout)
       @base = base
       @stdin  = stdin
       @stdout = stdout
-      @stderr = stderr
-      @status = 0
     end
 
     def run(argv)
@@ -44,15 +40,10 @@ module Wc
     end
 
     def read_files(paths)
-      paths.filter_map do |path|
-        begin
-          full_path = File.expand_path(path, @base)
-          [path, File.read(full_path)]
-        rescue SystemCallError => e
-          @status = 1
-          @stderr.puts "wc: #{path}: #{e.message.sub(/ @ .*\Z/, '')}"
-        end
-      end.to_h
+      paths.to_h do |path|
+        full_path = File.expand_path(path, @base)
+        [path, File.read(full_path)]
+      end
     end
   end
 end

@@ -6,5 +6,4 @@ require_relative './lib/runner'
 if $PROGRAM_NAME == __FILE__
   runner = Wc::Runner.new
   runner.run(ARGV)
-  exit(runner.status)
 end

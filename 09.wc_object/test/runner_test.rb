@@ -9,8 +9,7 @@ module Wc
     setup do
       @stdin  = StringIO.new
       @stdout = StringIO.new
-      @stderr = StringIO.new
-      @runner = Runner.new(base: __dir__, stdin: @stdin, stdout: @stdout, stderr: @stderr)
+      @runner = Runner.new(base: __dir__, stdin: @stdin, stdout: @stdout)
     end
 
     test 'run with empty argv' do
@@ -56,16 +55,6 @@ module Wc
         \       0       0       0       0 ../.gitkeep
         \       3       3      13      29 fixtures/hello_world.md
         \       6      22     137     153 total
-      EXPECTED
-    end
-
-    test 'run with invalid paths' do
-      @runner.run(%w[fixtures/non_existent_fixture ../not_found.md])
-
-      assert_equal "       0       0       0 total\n", @stdout.string
-      assert_equal <<~EXPECTED, @stderr.string
-        wc: fixtures/non_existent_fixture: No such file or directory
-        wc: ../not_found.md: No such file or directory
       EXPECTED
     end
   end
