@@ -14,36 +14,49 @@ module Wc
 
     def run(argv)
       options = ScriptOptions.new(argv)
-      counter = Counter.new(options.count_types)
 
       if options.paths.empty?
-        input = @stdin.read
-        counts = counter.count(input)
-        output_counts(counts)
+        run_with_stdin(options)
       else
-        texts = read_files(options.paths)
-
-        texts.each do |path, text|
-          counts = counter.count(text)
-          output_counts(counts, path)
-        end
-
-        output_counts(counter.total_counts, 'total') if options.paths.size > 1
+        run_with_files(options)
       end
     end
 
     private
+
+    def run_with_stdin(options)
+      counter = Counter.new(options.count_types)
+      input = @stdin.read
+      counts = counter.count(input)
+      output_counts(counts)
+    end
+
+    def run_with_files(options)
+      counter = Counter.new(options.count_types)
+
+      counts_by_path = options.paths.to_h do |path|
+        full_path = File.expand_path(path, @base)
+        text = File.read(full_path)
+        [path, counter.count(text)]
+      end
+
+      counts_by_path.each do |path, counts|
+        output_counts(counts, path)
+      end
+
+      output_total_counts(counts_by_path.values) if options.paths.size > 1
+    end
 
     def output_counts(counts, path = nil)
       line = CountList.render(counts, path)
       @stdout.puts line
     end
 
-    def read_files(paths)
-      paths.to_h do |path|
-        full_path = File.expand_path(path, @base)
-        [path, File.read(full_path)]
+    def output_total_counts(all_counts)
+      total_counts = Hash.new(0).merge(*all_counts) do |_key, count1, count2|
+        count1 + count2
       end
+      output_counts(total_counts, 'total')
     end
   end
 end

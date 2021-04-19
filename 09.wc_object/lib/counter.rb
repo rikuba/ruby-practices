@@ -4,26 +4,29 @@ require_relative './text_utils'
 
 module Wc
   class Counter
-    attr_reader :total_counts
-
     def initialize(count_types)
-      @count_methods = count_types.map do |type|
-        TextUtils.method(type)
-      end
-
-      @total_counts = [0] * count_types.size
+      @count_types = count_types
     end
 
     def count(text)
-      counts = @count_methods.map do |count_method|
-        count_method.call(text)
+      @count_types.to_h do |type|
+        [type, count_content(type, text)]
       end
+    end
 
-      counts.each_with_index do |count, i|
-        @total_counts[i] += count
+    private
+
+    def count_content(type, text)
+      case type
+      when :bytes
+        TextUtils.bytes(text)
+      when :lines
+        TextUtils.lines(text)
+      when :chars
+        TextUtils.chars(text)
+      when :words
+        TextUtils.words(text)
       end
-
-      counts
     end
   end
 end

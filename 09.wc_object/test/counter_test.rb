@@ -9,9 +9,8 @@ module Wc
       hello_world = read_file('fixtures/hello_world.md')
       lorem_ipsum = read_file('fixtures/lorem_ipsum.txt')
       counter = Counter.new(%i[lines words bytes])
-      assert_equal [3, 3, 29],   counter.count(hello_world)
-      assert_equal [3, 19, 124], counter.count(lorem_ipsum)
-      assert_equal [6, 22, 153], counter.total_counts
+      assert_equal({ lines: 3, words: 3,  bytes: 29  }, counter.count(hello_world))
+      assert_equal({ lines: 3, words: 19, bytes: 124 }, counter.count(lorem_ipsum))
     end
 
     private

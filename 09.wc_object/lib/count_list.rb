@@ -3,7 +3,7 @@
 module Wc
   module CountList
     def self.render(counts, path = nil)
-      count_list = counts.map do |count|
+      count_list = counts.each_value.map do |count|
         width = [count.to_s.size + 1, 8].max
         format('%*d', width, count)
       end.join
