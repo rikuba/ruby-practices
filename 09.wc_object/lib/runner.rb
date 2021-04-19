@@ -47,8 +47,8 @@ module Wc
       output_total_counts(counts_by_path.values) if options.paths.size > 1
     end
 
-    def output_counts(counts, path = nil)
-      line = CountList.render(counts, path)
+    def output_counts(counts, label = nil)
+      line = CountList.render(counts, label)
       @stdout.puts line
     end
 
