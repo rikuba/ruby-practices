@@ -23,7 +23,7 @@ module Wc
       options = ScriptOptions.new(['-c', '-lm', '-w'])
 
       assert_equal [], options.paths
-      assert_equal %i[lines words chars bytes], options.count_types
+      assert_equal %i[bytes lines chars words], options.count_types
     end
 
     test 'parse paths and one option' do

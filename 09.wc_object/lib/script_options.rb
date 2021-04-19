@@ -4,17 +4,12 @@ require 'optparse'
 
 module Wc
   class ScriptOptions
-    attr_reader :paths
+    attr_reader :count_types, :paths
 
     def initialize(argv)
       @paths = []
       @count_types = []
       parse(argv)
-    end
-
-    def count_types
-      # always return in this order
-      %i[lines words chars bytes] & @count_types
     end
 
     private
