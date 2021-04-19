@@ -13,7 +13,7 @@ module Wc
     end
 
     def run(argv)
-      options = ScriptOptions.new.parse(argv)
+      options = ScriptOptions.new(argv)
       counter = Counter.new(options.count_types)
 
       if options.paths.empty?
