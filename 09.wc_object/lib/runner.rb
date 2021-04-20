@@ -35,8 +35,7 @@ module Wc
       counter = TextCounter.new(options.count_types)
 
       counts_by_path = options.paths.to_h do |path|
-        full_path = File.expand_path(path, @base)
-        text = File.read(full_path)
+        text = read_file(path)
         [path, counter.count(text)]
       end
 
@@ -57,6 +56,11 @@ module Wc
         count1 + count2
       end
       output_counts(total_counts, 'total')
+    end
+
+    def read_file(path)
+      full_path = File.expand_path(path, @base)
+      File.read(full_path)
     end
   end
 end
